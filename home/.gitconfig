@@ -1,0 +1,7 @@
+[user]
+	email = tejas.techstack@gmail.com
+	name = Tejas R
+[url "git@github.com:"]
+	insteadOf = https://github.com/
+[pull]
+	rebase = true

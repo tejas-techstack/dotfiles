@@ -1,0 +1,11 @@
+[Unit]
+Description=synctl reconciler
+After=syncthing.service
+
+[Service]
+ExecStart=/home/tejasr/.synctl/venv/bin/python3 -m synctl daemon
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=default.target
