@@ -7,6 +7,12 @@ Personal Linux (Ubuntu) config, symlinked into place with `install.sh`.
 - `home/` mirrors `$HOME` exactly — e.g. `home/.zshrc` maps to `~/.zshrc`,
   `home/.config/i3/config` maps to `~/.config/i3/config`. `install.sh` walks
   this tree and symlinks every file into the matching path under `$HOME`.
+- `bin/` — utility scripts, symlinked manually into `~/.local/bin` (not
+  handled by `install.sh`) and driven by cron. Includes `claude-notify.sh`
+  (desktop notification helper), `claude-usage-notify.sh` (pings when
+  Claude plan usage crosses 80/85/95%), and `disk-space-notify.sh` (pings
+  when free disk space drops below 10% or 5%, then again every percent
+  free below that).
 - `scripts/` — standalone setup scripts, run manually as needed (not symlinked).
 
 ## Bootstrap on a fresh machine
