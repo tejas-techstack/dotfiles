@@ -9,10 +9,11 @@ Personal Linux (Ubuntu) config, symlinked into place with `install.sh`.
   this tree and symlinks every file into the matching path under `$HOME`.
 - `bin/` — utility scripts, symlinked manually into `~/.local/bin` (not
   handled by `install.sh`) and driven by cron. Includes `claude-notify.sh`
-  (desktop notification helper), `claude-usage-notify.sh` (pings when
-  Claude plan usage crosses 80/85/95%), and `disk-space-notify.sh` (pings
-  when free disk space drops below 10% or 5%, then again every percent
-  free below that).
+  (desktop notification helper), `phone-notify.sh` (detailed push
+  notification to phone via [ntfy](https://ntfy.sh) — see setup below),
+  `claude-usage-notify.sh` (pings when Claude plan usage crosses
+  80/85/95%), and `disk-space-notify.sh` (pings when free disk space
+  drops below 10% or 5%, then again every percent free below that).
 - `scripts/` — standalone setup scripts, run manually as needed (not symlinked).
 
 ## Bootstrap on a fresh machine
@@ -43,6 +44,32 @@ A few tools need to be installed before their configs are useful:
   installed (via oh-my-zsh custom themes or your package manager).
 - **zoxide / eza / fzf / xclip** — `.zshrc` references these; install via
   your package manager if a fresh shell complains about missing commands.
+
+### Phone notifications (`phone-notify.sh`)
+
+Uses [ntfy](https://ntfy.sh) — a free push service with no account needed.
+Delivery is gated by a private, unguessable topic name, generated once and
+kept in `~/.config/claude-notify/phone.env` (outside this repo, since this
+repo is public):
+
+```sh
+mkdir -p -m 700 ~/.config/claude-notify
+{ echo "NTFY_TOPIC=$(uuidgen)"; echo "NTFY_SERVER=https://ntfy.sh"; } > ~/.config/claude-notify/phone.env
+chmod 600 ~/.config/claude-notify/phone.env
+```
+
+Then install the ntfy app and subscribe to `https://ntfy.sh/<the topic
+from phone.env>`. Call `phone-notify "Title" "Detailed body"` (optionally
+`-p high|urgent` for priority, `-g tag1,tag2` for tags/emoji) from any
+script or Claude Code session on this machine. If `phone.env` doesn't
+exist, the script silently no-ops — so it's safe to symlink everywhere
+even on machines that haven't been set up for phone push yet.
+
+The topic name is the only thing standing between a random person and
+your notification feed on the public ntfy.sh server — treat it like a
+low-value secret (unguessable, not reused elsewhere, never committed) and
+don't rely on it for anything sensitive. For stronger guarantees, point
+`NTFY_SERVER` at a self-hosted ntfy instance instead.
 
 ## What's deliberately excluded
 
