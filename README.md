@@ -11,6 +11,8 @@ Personal Linux (Ubuntu) config, symlinked into place with `install.sh`.
   handled by `install.sh`) and driven by cron. Includes `claude-notify.sh`
   (desktop notification helper), `phone-notify.sh` (detailed push
   notification to phone via [ntfy](https://ntfy.sh) — see setup below),
+  `phone-notify-toggle.sh` / `claude-permission-notify.sh` (opt-in phone
+  push for Claude Code permission requests — see below),
   `claude-usage-notify.sh` (pings when Claude plan usage crosses
   80/85/95%), and `disk-space-notify.sh` (pings when free disk space
   drops below 10% or 5%, then again every percent free below that).
@@ -70,6 +72,24 @@ your notification feed on the public ntfy.sh server — treat it like a
 low-value secret (unguessable, not reused elsewhere, never committed) and
 don't rely on it for anything sensitive. For stronger guarantees, point
 `NTFY_SERVER` at a self-hosted ntfy instance instead.
+
+#### Permission-request hook
+
+`~/.claude/settings.json` has a `PermissionRequest` hook that runs
+`claude-permission-notify.sh` on every tool-permission prompt. It always
+sends a desktop toast via `claude-notify.sh`; it also pushes to phone via
+`phone-notify.sh`, but **only when toggled on** — off by default, since
+permission prompts fire often and most aren't worth a phone buzz.
+
+```sh
+phone-notify-toggle on       # phone push on for permission requests
+phone-notify-toggle off      # back to desktop-only (default)
+phone-notify-toggle status   # check current state
+```
+
+State lives in `~/.local/state/claude-notify/phone_hook_enabled` (not
+tracked by this repo) and persists across sessions until toggled again —
+switch it on before a long unattended run and back off when done.
 
 ## What's deliberately excluded
 
