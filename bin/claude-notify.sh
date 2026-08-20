@@ -26,7 +26,10 @@ if [ -z "${DBUS_SESSION_BUS_ADDRESS:-}" ]; then
 fi
 
 if command -v notify-send >/dev/null 2>&1; then
-    notify-send -u critical -a "Claude Code" -i dialog-question "$TITLE" "$BODY" 2>/dev/null
+    # Normal urgency (not critical) so the notification daemon auto-dismisses
+    # it into the notification history after the timeout, instead of pinning
+    # it on screen until manually closed.
+    notify-send -u normal -t 10000 -a "Claude Code" -i dialog-question "$TITLE" "$BODY" 2>/dev/null
 fi
 
 exit 0
